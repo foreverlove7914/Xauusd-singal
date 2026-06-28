@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>XAU/USD SMART v3</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --card: #111118;
+    --card2: #16161f;
+    --border: #2a2a3a;
+    --gold: #f5c518;
+    --gold2: #e0a800;
+    --green: #00e676;
+    --red: #ff1744;
+    --cyan: #00bcd4;
+    --purple: #7c4dff;
+    --text: #e0e0e0;
+    --muted: #666680;
+    --buy: #00e676;
+    --sell: #ff1744;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 100%);
+    border-bottom: 1px solid var(--gold);
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-title {
+    color: var(--gold);
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--green);
+    font-size: 13px;
+    font-weight: bold;
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+  }
+  .header-sub {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .price-live {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+  .price-change {
+    font-size: 12px;
+    margin-left: 8px;
+  }
+  .price-change.up { color: var(--green); }
+  .price-change.down { color: var(--red); }
+
+  /* MAIN CONTENT */
+  .content { padding: 12px 12px 0; }
+
+  /* SIGNAL CARD */
+  .signal-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .signal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--card2);
+    border-bottom: 1px solid var(--border);
+  }
+  .signal-tf {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+  .signal-dir {
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+  .signal-dir.BUY {
+    background: rgba(0,230,118,0.15);
+    color: var(--buy);
+    border: 1px solid var(--buy);
+  }
+  .signal-dir.SELL {
+    background: rgba(255,23,68,0.15);
+    color: var(--sell);
+    border: 1px solid var(--sell);
+  }
+  .signal-dir.loading {
+    background: rgba(245,197,24,0.1);
+    color: var(--gold);
+    border: 1px solid var(--gold2);
+    animation: blink 1.2s infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .signal-body { padding: 14px; }
+  .signal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .signal-field { }
+  .signal-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .signal-value {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  .signal-value.entry { color: var(--cyan); }
+  .signal-value.sl { color: var(--red); }
+  .signal-value.tp { color: var(--green); }
+  .signal-value.rr { color: var(--purple); }
+  .signal-value.dir-buy { color: var(--buy); }
+  .signal-value.dir-sell { color: var(--sell); }
+  .signal-value.loading { color: var(--muted); animation: blink 1.2s infinite; }
+
+  .copy-btn {
+    width: 100%;
+    padding: 10px;
+    background: rgba(245,197,24,0.08);
+    border: 1px solid var(--gold2);
+    border-radius: 8px;
+    color: var(--gold);
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+  .copy-btn:active {
+    background: rgba(245,197,24,0.2);
+    transform: scale(0.98);
+  }
+
+  /* STATUS BAR */
+  .status-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+  }
+  .status-item { text-align: center; }
+  .status-label { color: var(--muted); margin-bottom: 2px; }
+  .status-val { color: var(--gold); font-weight: bold; font-size: 12px; }
+
+  /* CANDLE MINI TABLE */
+  .candle-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 12px 14px;
+  }
+  .section-title {
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  .candle-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .candle-table th {
+    color: var(--muted);
+    text-align: left;
+    padding: 4px 6px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+  }
+  .candle-table td {
+    padding: 6px 6px;
+    border-bottom: 1px solid rgba(42,42,58,0.5);
+  }
+  .candle-table .tf { color: var(--gold); font-weight: bold; }
+  .candle-table .bull { color: var(--green); }
+  .candle-table .bear { color: var(--red); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: #000;
+    padding: 10px 22px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    display: none;
+    z-index: 999;
+  }
+  .toast.show { display: block; animation: fadeInOut 2s forwards; }
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* BOTTOM NAV */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: #0d0d1a;
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 100;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 4px 8px;
+    font-size: 10px;
+    color: var(--muted);
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+  }
+  .nav-item.active { color: var(--gold); }
+  .nav-icon { font-size: 20px; margin-bottom: 2px; }
+
+  /* LOADING STATE */
+  .loading-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .loading-icon { font-size: 40px; margin-bottom: 12px; animation: spin 3s linear infinite; }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .loading-text { color: var(--gold); font-size: 16px; letter-spacing: 2px; margin-bottom: 8px; }
+  .loading-sub { color: var(--muted); font-size: 11px; line-height: 1.6; }
+
+  /* SECTION TABS */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* KIRA TAB */
+  .kira-form { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+  .kira-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; letter-spacing: 1px; }
+  .kira-input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text); font-family: 'Courier New', monospace;
+    font-size: 14px; padding: 8px 10px; margin-bottom: 10px;
+  }
+  .kira-btn {
+    width: 100%; padding: 12px; background: var(--gold); color: #000;
+    border: none; border-radius: 8px; font-family: 'Courier New', monospace;
+    font-size: 14px; font-weight: bold; cursor: pointer; letter-spacing: 1px;
+  }
+  .kira-result { margin-top: 12px; padding: 12px; background: var(--card2); border-radius: 8px; font-size: 13px; line-height: 1.8; display: none; }
+  .kira-result.show { display: block; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="header-title">⚡ XAU/USD SMART v3</div>
+    <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+  </div>
+  <div class="header-sub">
+    <span>Self-Build Candle · Real Price</span>
+    <span id="clock">--:--:-- UTC</span>
+  </div>
+  <div style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+    <span class="price-live" id="livePrice">Loading...</span>
+    <span class="price-change" id="priceChange"></span>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- SIGNAL TAB -->
+  <div id="tab-signal" class="tab-content active">
+    <div id="signalContainer">
+      <div class="loading-card">
+        <div class="loading-icon">⏳</div>
+        <div class="loading-text">Mengumpul data candle...</div>
+        <div class="loading-sub">Dashboard sedang bina candle H1, H4,<br>Daily, Weekly dari harga sebenar.<br>Sila tunggu beberapa saat.</div>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-item">
+        <div class="status-label">SPREAD</div>
+        <div class="status-val" id="spread">--</div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">UPDATE</div>
+        <div class="status-val" id="lastUpdate">--</div>
+      </div>
+      <div class="status-item">
+        <div class="status-label">SOURCE</div>
+        <div class="status-val">YAHOO</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANDLE TAB -->
+  <div id="tab-candle" class="tab-content">
+    <div class="candle-section">
+      <div class="section-title">📊 CANDLE DATA</div>
+      <table class="candle-table">
+        <thead>
+          <tr>
+            <th>TF</th><th>OPEN</th><th>HIGH</th><th>LOW</th><th>CLOSE</th><th>ARAH</th>
+          </tr>
+        </thead>
+        <tbody id="candleTable">
+          <tr><td colspan="6" style="color:var(--muted); text-align:center; padding:20px;">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- WEEKLY TAB -->
+  <div id="tab-weekly" class="tab-content">
+    <div class="signal-card" id="weeklyCard">
+      <div class="signal-header">
+        <span class="signal-tf">📅 WEEKLY</span>
+        <span class="signal-dir loading" id="weeklyDir">WAIT</span>
+      </div>
+      <div class="signal-body">
+        <div class="signal-grid">
+          <div class="signal-field">
+            <div class="signal-label">ENTRY</div>
+            <div class="signal-value entry" id="w-entry">--</div>
+          </div>
+          <div class="signal-field">
+            <div class="signal-label">STOP LOSS</div>
+            <div class="signal-value sl" id="w-sl">--</div>
+          </div>
+          <div class="signal-field">
+            <div class="signal-label">TP 1</div>
+            <div class="signal-value tp" id="w-tp1">--</div>
+          </div>
+          <div class="signal-field">
+            <div class="signal-label">TP 2</div>
+            <div class="signal-value tp" id="w-tp2">--</div>
+          </div>
+          <div class="signal-field">
+            <div class="signal-label">RISK:REWARD</div>
+            <div class="signal-value rr" id="w-rr">--</div>
+          </div>
+          <div class="signal-field">
+            <div class="signal-label">ARAH</div>
+            <div class="signal-value" id="w-arah">--</div>
+          </div>
+        </div>
+        <button class="copy-btn" onclick="copySignal('weekly')">📋 Copy Signal untuk Broker</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KIRA TAB -->
+  <div id="tab-kira" class="tab-content">
+    <div class="kira-form">
+      <div class="section-title">🧮 KIRA LOT & RISK</div>
+      <div class="kira-label">MODAL (USD)</div>
+      <input class="kira-input" type="number" id="k-modal" placeholder="Contoh: 1000" value="1000">
+      <div class="kira-label">RISK % PER TRADE</div>
+      <input class="kira-input" type="number" id="k-risk" placeholder="Contoh: 1" value="1" step="0.1">
+      <div class="kira-label">STOP LOSS (PIPS)</div>
+      <input class="kira-input" type="number" id="k-sl" placeholder="Contoh: 200">
+      <button class="kira-btn" onclick="kiraLot()">⚡ KIRA SEKARANG</button>
+      <div class="kira-result" id="kiraResult"></div>
+    </div>
+  </div>
+
+  <!-- BROKER TAB -->
+  <div id="tab-broker" class="tab-content">
+    <div class="candle-section">
+      <div class="section-title">🔗 INFO BROKER</div>
+      <div style="font-size:12px; color:var(--muted); line-height:2;">
+        <div>Pair: <span style="color:var(--gold)">XAU/USD (GOLD)</span></div>
+        <div>Pip Value: <span style="color:var(--cyan)">~$1 per 0.01 lot per pip</span></div>
+        <div>Spread Biasa: <span style="color:var(--green)">15–30 pips</span></div>
+        <div>Lot Min: <span style="color:var(--text)">0.01</span></div>
+        <div style="margin-top:12px; color:var(--gold)">⚠️ PERINGATAN RISIKO</div>
+        <div style="margin-top:6px; font-size:11px; line-height:1.8; color:var(--muted)">
+          Signal ini adalah untuk tujuan maklumat sahaja. Dagangan forex dan emas melibatkan risiko tinggi. Pastikan anda faham risiko sebelum berdagang. Buat keputusan sendiri.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end content -->
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="switchTab('signal', this)">
+    <div class="nav-icon">📡</div>SIGNAL
+  </div>
+  <div class="nav-item" onclick="switchTab('candle', this)">
+    <div class="nav-icon">🔨</div>CANDLE
+  </div>
+  <div class="nav-item" onclick="switchTab('weekly', this)">
+    <div class="nav-icon">📅</div>WEEKLY
+  </div>
+  <div class="nav-item" onclick="switchTab('kira', this)">
+    <div class="nav-icon">🧮</div>KIRA
+  </div>
+  <div class="nav-item" onclick="switchTab('broker', this)">
+    <div class="nav-icon">🔗</div>BROKER
+  </div>
+</div>
+
+<div class="toast" id="toast">✅ Signal disalin!</div>
+
+<script>
+// =====================
+// STATE
+// =====================
+let candles = { H1: null, H4: null, Daily: null, Weekly: null };
+let currentPrice = null;
+let prevPrice = null;
+let priceHistory = [];
+let initialized = false;
+
+// =====================
+// CLOCK
+// =====================
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getUTCHours()).padStart(2,'0');
+  const m = String(now.getUTCMinutes()).padStart(2,'0');
+  const s = String(now.getUTCSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = `${h}:${m}:${s} UTC`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// =====================
+// FETCH PRICE - Multiple fallback APIs
+// =====================
+const CORS_PROXIES = [
+  'https://corsproxy.io/?',
+  'https://api.allorigins.win/raw?url=',
+];
+
+async function fetchYahooPrice() {
+  const url = 'https://query1.finance.yahoo.com/v8/finance/chart/GC%3DF?interval=1m&range=1d';
+  for (const proxy of ['', ...CORS_PROXIES]) {
+    try {
+      const res = await fetch(proxy + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const result = data?.chart?.result?.[0];
+      if (!result) continue;
+      const closes = result.indicators?.quote?.[0]?.close;
+      const opens = result.indicators?.quote?.[0]?.open;
+      const highs = result.indicators?.quote?.[0]?.high;
+      const lows = result.indicators?.quote?.[0]?.low;
+      const timestamps = result.timestamp;
+      if (!closes || closes.length === 0) continue;
+      // filter nulls
+      const validIdx = closes.map((c,i) => c !== null ? i : -1).filter(i => i >= 0);
+      if (validIdx.length === 0) continue;
+      const lastIdx = validIdx[validIdx.length - 1];
+      return {
+        price: closes[lastIdx],
+        open: opens?.[lastIdx],
+        high: highs?.[lastIdx],
+        low: lows?.[lastIdx],
+        allCloses: validIdx.map(i => closes[i]),
+        allOpens: validIdx.map(i => opens?.[i]),
+        allHighs: validIdx.map(i => highs?.[i]),
+        allLows: validIdx.map(i => lows?.[i]),
+        timestamps: validIdx.map(i => timestamps?.[i])
+      };
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
+async function fetchYahooHistory(range, interval) {
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/GC%3DF?interval=${interval}&range=${range}`;
+  for (const proxy of ['', ...CORS_PROXIES]) {
+    try {
+      const res = await fetch(proxy + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const result = data?.chart?.result?.[0];
+      if (!result) continue;
+      const closes = result.indicators?.quote?.[0]?.close;
+      const opens = result.indicators?.quote?.[0]?.open;
+      const highs = result.indicators?.quote?.[0]?.high;
+      const lows = result.indicators?.quote?.[0]?.low;
+      const timestamps = result.timestamp;
+      if (!closes) continue;
+      const bars = [];
+      for (let i = 0; i < closes.length; i++) {
+        if (closes[i] === null) continue;
+        bars.push({ t: timestamps[i]*1000, o: opens[i], h: highs[i], l: lows[i], c: closes[i] });
+      }
+      return bars;
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
+// =====================
+// BUILD CANDLES
+// =====================
+function getLastCandle(bars) {
+  if (!bars || bars.length < 2) return null;
+  // return second to last (last completed)
+  const last = bars[bars.length - 2];
+  const cur = bars[bars.length - 1];
+  return { closed: last, current: cur };
+}
+
+async function buildAllCandles() {
+  try {
+    // H1: 5d range, 1h interval
+    const h1bars = await fetchYahooHistory('5d', '1h');
+    if (h1bars && h1bars.length >= 2) {
+      const c = getLastCandle(h1bars);
+      candles.H1 = c;
+    }
+
+    // H4: 1mo range, 4h -> use 60m and aggregate
+    const h4raw = await fetchYahooHistory('1mo', '1h');
+    if (h4raw && h4raw.length >= 4) {
+      // group into 4h blocks
+      const h4bars = [];
+      for (let i = 0; i + 3 < h4raw.length; i += 4) {
+        const grp = h4raw.slice(i, i+4);
+        h4bars.push({
+          t: grp[0].t,
+          o: grp[0].o,
+          h: Math.max(...grp.map(x => x.h)),
+          l: Math.min(...grp.map(x => x.l)),
+          c: grp[grp.length-1].c
+        });
+      }
+      if (h4bars.length >= 2) candles.H4 = getLastCandle(h4bars);
+    }
+
+    // Daily: 1mo range, 1d interval
+    const dbars = await fetchYahooHistory('1mo', '1d');
+    if (dbars && dbars.length >= 2) candles.Daily = getLastCandle(dbars);
+
+    // Weekly: 6mo range, 1wk interval
+    const wbars = await fetchYahooHistory('6mo', '1wk');
+    if (wbars && wbars.length >= 2) candles.Weekly = getLastCandle(wbars);
+
+    initialized = true;
+    renderAll();
+  } catch(e) {
+    console.error('Build candle error:', e);
+  }
+}
+
+// =====================
+// SIGNAL GENERATION
+// =====================
+function generateSignal(candle, tf) {
+  if (!candle || !candle.closed || !currentPrice) return null;
+  const c = candle.closed;
+  const cur = candle.current || {};
+  const price = currentPrice;
+
+  const bullish = c.c > c.o;
+  const range = c.h - c.l;
+  const body = Math.abs(c.c - c.o);
+  const bodyRatio = body / range;
+
+  // Determine direction
+  let dir = bullish ? 'BUY' : 'SELL';
+
+  // ATR-like multiplier by timeframe
+  const atrMult = { H1: 1, H4: 2.5, Daily: 5, Weekly: 12 };
+  const mult = atrMult[tf] || 1;
+  const atr = range;
+
+  let entry, sl, tp1, tp2;
+
+  if (dir === 'BUY') {
+    entry = parseFloat((price + atr * 0.1 * mult).toFixed(2));
+    sl = parseFloat((price - atr * 0.5 * mult).toFixed(2));
+    tp1 = parseFloat((price + atr * 1.0 * mult).toFixed(2));
+    tp2 = parseFloat((price + atr * 2.0 * mult).toFixed(2));
+  } else {
+    entry = parseFloat((price - atr * 0.1 * mult).toFixed(2));
+    sl = parseFloat((price + atr * 0.5 * mult).toFixed(2));
+    tp1 = parseFloat((price - atr * 1.0 * mult).toFixed(2));
+    tp2 = parseFloat((price - atr * 2.0 * mult).toFixed(2));
+  }
+
+  const risk = Math.abs(entry - sl);
+  const reward = Math.abs(tp1 - entry);
+  const rr = risk > 0 ? (reward / risk).toFixed(2) : '--';
+
+  return { dir, entry, sl, tp1, tp2, rr, atr: atr.toFixed(2) };
+}
+
+// =====================
+// RENDER
+// =====================
+function renderAll() {
+  renderSignals();
+  renderCandleTable();
+  renderWeekly();
+}
+
+const TF_ORDER = ['H1', 'H4', 'Daily', 'Weekly'];
+const TF_ICONS = { H1: '⏱️', H4: '🕓', Daily: '📆', Weekly: '📅' };
+
+function renderSignals() {
+  const container = document.getElementById('signalContainer');
+  if (!initialized || !currentPrice) {
+    return; // keep loading
+  }
+
+  let html = '';
+  for (const tf of TF_ORDER) {
+    const sig = generateSignal(candles[tf], tf);
+    if (!sig) {
+      html += `
+        <div class="signal-card">
+          <div class="signal-header">
+            <span class="signal-tf">${TF_ICONS[tf]} ${tf}</span>
+            <span class="signal-dir loading">WAIT</span>
+          </div>
+          <div class="signal-body">
+            <div class="signal-grid">
+              <div class="signal-field"><div class="signal-label">ENTRY</div><div class="signal-value loading">--</div></div>
+              <div class="signal-field"><div class="signal-label">STOP LOSS</div><div class="signal-value loading">--</div></div>
+              <div class="signal-field"><div class="signal-label">TP 1</div><div class="signal-value loading">--</div></div>
+              <div class="signal-field"><div class="signal-label">TP 2</div><div class="signal-value loading">--</div></div>
+              <div class="signal-field"><div class="signal-label">RISK:REWARD</div><div class="signal-value loading">--</div></div>
+              <div class="signal-field"><div class="signal-label">ARAH</div><div class="signal-value loading">--</div></div>
+            </div>
+          </div>
+        </div>`;
+      continue;
+    }
+
+    const dirClass = sig.dir === 'BUY' ? 'BUY' : 'SELL';
+    const arahClass = sig.dir === 'BUY' ? 'dir-buy' : 'dir-sell';
+    html += `
+      <div class="signal-card">
+        <div class="signal-header">
+          <span class="signal-tf">${TF_ICONS[tf]} ${tf}</span>
+          <span class="signal-dir ${dirClass}">${sig.dir}</span>
+        </div>
+        <div class="signal-body">
+          <div class="signal-grid">
+            <div class="signal-field">
+              <div class="signal-label">ENTRY</div>
+              <div class="signal-value entry">${sig.entry.toFixed(2)}</div>
+            </div>
+            <div class="signal-field">
+              <div class="signal-label">STOP LOSS</div>
+              <div class="signal-value sl">${sig.sl.toFixed(2)}</div>
+            </div>
+            <div class="signal-field">
+              <div class="signal-label">TP 1</div>
+              <div class="signal-value tp">${sig.tp1.toFixed(2)}</div>
+            </div>
+            <div class="signal-field">
+              <div class="signal-label">TP 2</div>
+              <div class="signal-value tp">${sig.tp2.toFixed(2)}</div>
+            </div>
+            <div class="signal-field">
+              <div class="signal-label">RISK:REWARD</div>
+              <div class="signal-value rr">1:${sig.rr}</div>
+            </div>
+            <div class="signal-field">
+              <div class="signal-label">ARAH</div>
+              <div class="signal-value ${arahClass}">${sig.dir}</div>
+            </div>
+          </div>
+          <button class="copy-btn" onclick="copySignal('${tf}', ${sig.entry}, ${sig.sl}, ${sig.tp1}, ${sig.tp2}, '${sig.dir}', '${sig.rr}')">📋 Copy Signal untuk Broker</button>
+        </div>
+      </div>`;
+  }
+  container.innerHTML = html;
+}
+
+function renderCandleTable() {
+  const tbody = document.getElementById('candleTable');
+  if (!initialized) return;
+  let rows = '';
+  for (const tf of TF_ORDER) {
+    const c = candles[tf]?.closed;
+    if (!c) {
+      rows += `<tr><td class="tf">${tf}</td><td colspan="5" style="color:var(--muted)">--</td></tr>`;
+      continue;
+    }
+    const bull = c.c >= c.o;
+    const cls = bull ? 'bull' : 'bear';
+    const arrow = bull ? '▲' : '▼';
+    rows += `<tr>
+      <td class="tf">${tf}</td>
+      <td>${c.o.toFixed(2)}</td>
+      <td>${c.h.toFixed(2)}</td>
+      <td>${c.l.toFixed(2)}</td>
+      <td>${c.c.toFixed(2)}</td>
+      <td class="${cls}">${arrow}</td>
+    </tr>`;
+  }
+  tbody.innerHTML = rows;
+}
+
+function renderWeekly() {
+  const sig = generateSignal(candles.Weekly, 'Weekly');
+  if (!sig) return;
+  document.getElementById('weeklyDir').textContent = sig.dir;
+  document.getElementById('weeklyDir').className = `signal-dir ${sig.dir}`;
+  document.getElementById('w-entry').textContent = sig.entry.toFixed(2);
+  document.getElementById('w-sl').textContent = sig.sl.toFixed(2);
+  document.getElementById('w-tp1').textContent = sig.tp1.toFixed(2);
+  document.getElementById('w-tp2').textContent = sig.tp2.toFixed(2);
+  document.getElementById('w-rr').textContent = '1:' + sig.rr;
+  document.getElementById('w-arah').textContent = sig.dir;
+  document.getElementById('w-arah').className = `signal-value ${sig.dir === 'BUY' ? 'dir-buy' : 'dir-sell'}`;
+}
+
+// =====================
+// LIVE PRICE LOOP
+// =====================
+async function updateLivePrice() {
+  const data = await fetchYahooPrice();
+  if (data) {
+    prevPrice = currentPrice;
+    currentPrice = data.price;
+
+    const el = document.getElementById('livePrice');
+    const chEl = document.getElementById('priceChange');
+    el.textContent = currentPrice.toFixed(2);
+
+    if (prevPrice) {
+      const diff = currentPrice - prevPrice;
+      const pct = ((diff / prevPrice) * 100).toFixed(3);
+      const sign = diff >= 0 ? '+' : '';
+      chEl.textContent = `${sign}${diff.toFixed(2)} (${sign}${pct}%)`;
+      chEl.className = `price-change ${diff >= 0 ? 'up' : 'down'}`;
+    }
+
+    const now = new Date();
+    document.getElementById('lastUpdate').textContent =
+      `${String(now.getUTCHours()).padStart(2,'0')}:${String(now.getUTCMinutes()).padStart(2,'0')}`;
+    document.getElementById('spread').textContent = '20';
+
+    if (!initialized) {
+      await buildAllCandles();
+    } else {
+      renderSignals();
+      renderWeekly();
+    }
+  }
+}
+
+// =====================
+// COPY SIGNAL
+// =====================
+function copySignal(tf, entry, sl, tp1, tp2, dir, rr) {
+  if (tf === 'weekly') {
+    // from weekly tab
+    const e = document.getElementById('w-entry').textContent;
+    const s = document.getElementById('w-sl').textContent;
+    const t1 = document.getElementById('w-tp1').textContent;
+    const t2 = document.getElementById('w-tp2').textContent;
+    const d = document.getElementById('weeklyDir').textContent;
+    const r = document.getElementById('w-rr').textContent;
+    const text = `⚡ XAU/USD SIGNAL [WEEKLY]\n📌 ARAH: ${d}\n🟢 ENTRY: ${e}\n🔴 SL: ${s}\n✅ TP1: ${t1}\n✅ TP2: ${t2}\n📊 RR: ${r}\n\n[Generated by XAU/USD SMART v3]`;
+    navigator.clipboard?.writeText(text);
+  } else {
+    const text = `⚡ XAU/USD SIGNAL [${tf}]\n📌 ARAH: ${dir}\n🟢 ENTRY: ${entry.toFixed(2)}\n🔴 SL: ${sl.toFixed(2)}\n✅ TP1: ${tp1.toFixed(2)}\n✅ TP2: ${tp2.toFixed(2)}\n📊 RR: 1:${rr}\n\n[Generated by XAU/USD SMART v3]`;
+    navigator.clipboard?.writeText(text);
+  }
+  showToast();
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.remove('show');
+  void t.offsetWidth;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// =====================
+// TAB SWITCH
+// =====================
+function switchTab(name, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  el.classList.add('active');
+}
+
+// =====================
+// KIRA LOT
+// =====================
+function kiraLot() {
+  const modal = parseFloat(document.getElementById('k-modal').value) || 0;
+  const risk = parseFloat(document.getElementById('k-risk').value) || 1;
+  const sl = parseFloat(document.getElementById('k-sl').value) || 0;
+  const result = document.getElementById('kiraResult');
+
+  if (!modal || !sl) {
+    result.innerHTML = '<span style="color:var(--red)">Sila isi semua medan.</span>';
+    result.classList.add('show');
+    return;
+  }
+
+  const riskAmt = modal * (risk / 100);
+  const pipVal = 1; // $1 per 0.01 lot per pip for gold
+  const lots = ((riskAmt / sl) / 100).toFixed(2);
+  const maxLoss = (sl * parseFloat(lots) * 100).toFixed(2);
+
+  result.innerHTML = `
+    <div style="color:var(--gold); margin-bottom:8px;">📊 HASIL KIRAAN</div>
+    <div>Modal: <span style="color:var(--cyan)">$${modal.toFixed(2)}</span></div>
+    <div>Risk: <span style="color:var(--red)">${risk}% = $${riskAmt.toFixed(2)}</span></div>
+    <div>SL: <span style="color:var(--red)">${sl} pips</span></div>
+    <div>LOT SAIZ: <span style="color:var(--green); font-size:18px; font-weight:bold;">${lots} lot</span></div>
+    <div style="margin-top:6px; font-size:11px; color:var(--muted)">Max Loss jika SL kena: ~$${maxLoss}</div>
+  `;
+  result.classList.add('show');
+}
+
+// =====================
+// START
+// =====================
+updateLivePrice();
+setInterval(updateLivePrice, 30000); // update every 30s
+</script>
+</body>
+</html>

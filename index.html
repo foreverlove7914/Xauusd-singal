@@ -31,9 +31,7 @@ body {
   background: linear-gradient(135deg, #0d0d1a, #1a1a2e);
   border-bottom: 1px solid var(--gold);
   padding: 10px 14px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  position: sticky; top: 0; z-index: 100;
 }
 .header-row1 { display: flex; justify-content: space-between; align-items: center; }
 .title { color: var(--gold); font-size: 16px; font-weight: bold; letter-spacing: 2px; }
@@ -48,7 +46,6 @@ body {
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
-/* SIGNAL CARD */
 .sig-card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -57,20 +54,15 @@ body {
   overflow: hidden;
 }
 .sig-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: flex; justify-content: space-between; align-items: center;
   padding: 10px 12px;
   background: var(--card2);
   border-bottom: 1px solid var(--border);
 }
 .sig-tf { color: var(--gold); font-size: 13px; font-weight: bold; letter-spacing: 1px; }
 .badge {
-  padding: 3px 12px;
-  border-radius: 15px;
-  font-size: 12px;
-  font-weight: bold;
-  letter-spacing: 2px;
+  padding: 3px 12px; border-radius: 15px;
+  font-size: 12px; font-weight: bold; letter-spacing: 2px;
 }
 .badge.BUY { background: rgba(0,230,118,.15); color: var(--green); border: 1px solid var(--green); }
 .badge.SELL { background: rgba(255,23,68,.15); color: var(--red); border: 1px solid var(--red); }
@@ -80,122 +72,83 @@ body {
 .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
 .sf-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 3px; }
 .sf-val { font-size: 15px; font-weight: bold; }
-.c-entry { color: var(--cyan); }
-.c-sl { color: var(--red); }
-.c-tp { color: var(--green); }
-.c-rr { color: var(--purple); }
-.c-buy { color: var(--green); }
-.c-sell { color: var(--red); }
-.c-wait { color: var(--muted); animation: blink 1.2s infinite; }
+.c-entry{color:var(--cyan)} .c-sl{color:var(--red)} .c-tp{color:var(--green)}
+.c-rr{color:var(--purple)} .c-buy{color:var(--green)} .c-sell{color:var(--red)}
+.c-wait{color:var(--muted);animation:blink 1.2s infinite}
 .copy-btn {
-  width: 100%; padding: 9px;
-  background: rgba(245,197,24,.07);
-  border: 1px solid var(--gold2);
-  border-radius: 7px;
-  color: var(--gold);
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  cursor: pointer;
-  letter-spacing: 1px;
+  width:100%; padding:9px;
+  background:rgba(245,197,24,.07);
+  border:1px solid var(--gold2); border-radius:7px;
+  color:var(--gold); font-family:'Courier New',monospace;
+  font-size:12px; cursor:pointer; letter-spacing:1px;
 }
-.copy-btn:active { background: rgba(245,197,24,.2); }
+.copy-btn:active { background:rgba(245,197,24,.2); }
 
-/* STATUS */
 .status-row {
-  display: flex;
-  justify-content: space-between;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-bottom: 10px;
-  font-size: 10px;
+  display:flex; justify-content:space-between;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:8px; padding:8px 12px; margin-bottom:10px; font-size:10px;
 }
-.si-label { color: var(--muted); margin-bottom: 2px; }
-.si-val { color: var(--gold); font-weight: bold; font-size: 11px; }
+.si-label{color:var(--muted);margin-bottom:2px;}
+.si-val{color:var(--gold);font-weight:bold;font-size:11px;}
 
-/* CANDLE TABLE */
 .section-box {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px;
-  margin-bottom: 10px;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:10px; padding:12px; margin-bottom:10px;
 }
-.sec-title { color: var(--gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 10px; font-weight: bold; }
-table { width: 100%; border-collapse: collapse; font-size: 11px; }
-th { color: var(--muted); text-align: left; padding: 3px 5px; letter-spacing: 1px; border-bottom: 1px solid var(--border); }
-td { padding: 5px 5px; border-bottom: 1px solid rgba(42,42,58,.4); }
-.tf-cell { color: var(--gold); font-weight: bold; }
-.bull { color: var(--green); } .bear { color: var(--red); }
+.sec-title{color:var(--gold);font-size:11px;letter-spacing:2px;margin-bottom:10px;font-weight:bold;}
+table{width:100%;border-collapse:collapse;font-size:11px;}
+th{color:var(--muted);text-align:left;padding:3px 5px;letter-spacing:1px;border-bottom:1px solid var(--border);}
+td{padding:5px 5px;border-bottom:1px solid rgba(42,42,58,.4);}
+.tf-cell{color:var(--gold);font-weight:bold;}
+.bull{color:var(--green);} .bear{color:var(--red);}
 
-/* KIRA */
-.kira-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; letter-spacing: 1px; }
+.kira-label{font-size:10px;color:var(--muted);margin-bottom:4px;letter-spacing:1px;}
 .kira-in {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
-  padding: 8px 10px;
-  margin-bottom: 10px;
+  width:100%; background:var(--bg); border:1px solid var(--border);
+  border-radius:6px; color:var(--text); font-family:'Courier New',monospace;
+  font-size:14px; padding:8px 10px; margin-bottom:10px;
 }
 .kira-btn {
-  width: 100%; padding: 11px;
-  background: var(--gold); color: #000;
-  border: none; border-radius: 7px;
-  font-family: 'Courier New', monospace;
-  font-size: 13px; font-weight: bold;
-  cursor: pointer; letter-spacing: 1px;
+  width:100%; padding:11px; background:var(--gold); color:#000;
+  border:none; border-radius:7px; font-family:'Courier New',monospace;
+  font-size:13px; font-weight:bold; cursor:pointer; letter-spacing:1px;
 }
-.kira-result { margin-top: 10px; padding: 10px; background: var(--card2); border-radius: 7px; font-size: 12px; line-height: 1.9; display: none; }
-.kira-result.show { display: block; }
+.kira-result{margin-top:10px;padding:10px;background:var(--card2);border-radius:7px;font-size:12px;line-height:1.9;display:none;}
+.kira-result.show{display:block;}
 
-/* TOAST */
 .toast {
-  position: fixed; bottom: 85px; left: 50%;
-  transform: translateX(-50%);
-  background: var(--gold); color: #000;
-  padding: 9px 20px; border-radius: 20px;
-  font-size: 12px; font-weight: bold;
-  display: none; z-index: 999;
+  position:fixed; bottom:85px; left:50%; transform:translateX(-50%);
+  background:var(--gold); color:#000; padding:9px 20px;
+  border-radius:20px; font-size:12px; font-weight:bold;
+  display:none; z-index:999;
 }
-.toast.show { display: block; animation: fio 2.2s forwards; }
+.toast.show{display:block;animation:fio 2.2s forwards;}
 @keyframes fio {
   0%{opacity:0;transform:translateX(-50%) translateY(8px)}
   15%{opacity:1;transform:translateX(-50%) translateY(0)}
-  80%{opacity:1}
-  100%{opacity:0}
+  80%{opacity:1} 100%{opacity:0}
 }
-
-/* NAV */
 .nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: #0d0d1a;
-  border-top: 1px solid var(--border);
-  display: flex; z-index: 100;
+  position:fixed; bottom:0; left:0; right:0;
+  background:#0d0d1a; border-top:1px solid var(--border);
+  display:flex; z-index:100;
 }
 .nav-i {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; padding: 8px 4px 6px;
-  font-size: 9px; color: var(--muted);
-  cursor: pointer; letter-spacing: 1px;
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; padding:8px 4px 6px;
+  font-size:9px; color:var(--muted); cursor:pointer; letter-spacing:1px;
 }
-.nav-i.active { color: var(--gold); }
-.nav-ico { font-size: 18px; margin-bottom: 2px; }
+.nav-i.active{color:var(--gold);}
+.nav-ico{font-size:18px;margin-bottom:2px;}
 
-/* API STATUS */
-.api-status {
-  text-align: center;
-  padding: 6px;
-  font-size: 10px;
-  color: var(--muted);
-  margin-bottom: 8px;
+.price-alert {
+  background: rgba(255,193,7,0.1);
+  border: 1px solid var(--gold2);
+  border-radius:8px; padding:8px 12px;
+  font-size:11px; color:var(--gold);
+  margin-bottom:10px; text-align:center;
 }
-.api-ok { color: var(--green); }
-.api-fail { color: var(--red); }
 </style>
 </head>
 <body>
@@ -221,10 +174,10 @@ td { padding: 5px 5px; border-bottom: 1px solid rgba(42,42,58,.4); }
 <div id="tab-signal" class="tab-content active">
   <div id="sigContainer">
     <div class="sig-card">
-      <div class="sig-head"><span class="sig-tf">⏳ Memuatkan signal...</span><span class="badge WAIT">WAIT</span></div>
+      <div class="sig-head"><span class="sig-tf">⏳ Memuatkan...</span><span class="badge WAIT">WAIT</span></div>
       <div class="sig-body" style="text-align:center;padding:20px;color:var(--muted);font-size:12px;">
-        Sedang ambil harga XAU/USD...<br><br>
-        <span id="loadMsg">Mencuba API 1/4...</span>
+        Sedang ambil harga XAU/USD spot...<br><br>
+        <span id="loadMsg">Memulakan...</span>
       </div>
     </div>
   </div>
@@ -238,9 +191,9 @@ td { padding: 5px 5px; border-bottom: 1px solid rgba(42,42,58,.4); }
 <!-- CANDLE TAB -->
 <div id="tab-candle" class="tab-content">
   <div class="section-box">
-    <div class="sec-title">📊 DATA CANDLE (HARGA SEBENAR)</div>
+    <div class="sec-title">📊 DATA CANDLE</div>
     <table>
-      <thead><tr><th>TF</th><th>BUKA</th><th>TINGGI</th><th>RENDAH</th><th>TUTUP</th><th>ARAH</th></tr></thead>
+      <thead><tr><th>TF</th><th>BUKA</th><th>TINGGI</th><th>RENDAH</th><th>TUTUP</th><th>↕</th></tr></thead>
       <tbody id="candleTbody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:15px;">Memuatkan...</td></tr></tbody>
     </table>
   </div>
@@ -276,7 +229,7 @@ td { padding: 5px 5px; border-bottom: 1px solid rgba(42,42,58,.4); }
     <div class="kira-label">RISIKO % PER TRADE</div>
     <input class="kira-in" type="number" id="kRisk" value="1" step="0.1" placeholder="cth: 1">
     <div class="kira-label">STOP LOSS (PIPS)</div>
-    <input class="kira-in" type="number" id="kSL" placeholder="cth: 200">
+    <input class="kira-in" type="number" id="kSL" placeholder="cth: 150">
     <button class="kira-btn" onclick="kiraLot()">⚡ KIRA SEKARANG</button>
     <div class="kira-result" id="kiraRes"></div>
   </div>
@@ -294,12 +247,12 @@ td { padding: 5px 5px; border-bottom: 1px solid rgba(42,42,58,.4); }
       <div>Sesi Terbaik: <span style="color:var(--text)">London & New York</span></div>
       <br>
       <div style="color:var(--gold)">⚠️ PERINGATAN RISIKO</div>
-      <div style="font-size:11px;margin-top:6px;line-height:1.8;">Signal ini untuk maklumat sahaja. Dagangan melibatkan risiko. Buat keputusan sendiri.</div>
+      <div style="font-size:11px;margin-top:6px;line-height:1.8;">Signal ini untuk maklumat sahaja. Dagangan melibatkan risiko tinggi. Buat keputusan sendiri.</div>
     </div>
   </div>
 </div>
 
-</div><!-- end content -->
+</div>
 
 <div class="nav">
   <div class="nav-i active" onclick="switchTab('signal',this)"><div class="nav-ico">📡</div>SIGNAL</div>
@@ -312,176 +265,232 @@ td { padding: 5px 5px; border-bottom: 1px solid rgba(42,42,58,.4); }
 <div class="toast" id="toast">✅ Signal disalin!</div>
 
 <script>
-// ── STATE ──
+// STATE
 let price = null, prevPrice = null;
 let candles = {};
 let apiName = '--';
 let initialized = false;
 let retryCount = 0;
 
-// ── CLOCK ──
+// CLOCK
 function tick() {
   const n = new Date();
-  const pad = x => String(x).padStart(2,'0');
-  document.getElementById('clock').textContent =
-    `${pad(n.getUTCHours())}:${pad(n.getUTCMinutes())}:${pad(n.getUTCSeconds())} UTC`;
+  const p = x => String(x).padStart(2,'0');
+  document.getElementById('clock').textContent = `${p(n.getUTCHours())}:${p(n.getUTCMinutes())}:${p(n.getUTCSeconds())} UTC`;
 }
 setInterval(tick, 1000); tick();
-
-// ── HELPER: safe fetch with timeout ──
-async function safeFetch(url, timeout=8000) {
-  const ctrl = new AbortController();
-  const id = setTimeout(() => ctrl.abort(), timeout);
-  try {
-    const r = await fetch(url, { signal: ctrl.signal, mode: 'cors' });
-    clearTimeout(id);
-    return r;
-  } catch(e) {
-    clearTimeout(id);
-    throw e;
-  }
-}
-
-// ── API 1: Metals-API via corsproxy.io ──
-async function tryMetalsAPI() {
-  // Use a free public gold price endpoint via proxy
-  const url = 'https://corsproxy.io/?' + encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=1d&range=5d');
-  const r = await safeFetch(url);
-  if (!r.ok) throw new Error('not ok');
-  const d = await r.json();
-  const q = d.chart.result[0].indicators.quote[0];
-  const closes = q.close.filter(x => x !== null);
-  return { price: closes[closes.length-1], source: 'Yahoo/Proxy1' };
-}
-
-// ── API 2: via allorigins proxy ──
-async function tryAllOrigins() {
-  const url = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=1d&range=5d');
-  const r = await safeFetch(url);
-  if (!r.ok) throw new Error('not ok');
-  const d = await r.json();
-  const q = d.chart.result[0].indicators.quote[0];
-  const closes = q.close.filter(x => x !== null);
-  return { price: closes[closes.length-1], source: 'Yahoo/Proxy2' };
-}
-
-// ── API 3: Frankfurter (EUR/USD as base, derive XAU estimate) ──
-// Actually use a direct open gold API
-async function tryOpenGold() {
-  const url = 'https://corsproxy.io/?' + encodeURIComponent('https://data-asg.goldprice.org/dbXRates/USD');
-  const r = await safeFetch(url);
-  if (!r.ok) throw new Error('not ok');
-  const d = await r.json();
-  const xauPrice = d.items[0].xauPrice;
-  return { price: xauPrice, source: 'GoldPrice.org' };
-}
-
-// ── API 4: exchangerate-api for XAU ──
-async function tryExchangeAPI() {
-  const url = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://data-asg.goldprice.org/dbXRates/USD');
-  const r = await safeFetch(url);
-  if (!r.ok) throw new Error('not ok');
-  const d = await r.json();
-  return { price: d.items[0].xauPrice, source: 'GoldPrice/Proxy2' };
-}
-
-// ── HISTORY for candle building ──
-async function fetchHistory(range, interval) {
-  const endpoints = [
-    'https://corsproxy.io/?' + encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=${interval}&range=${range}`),
-    'https://api.allorigins.win/raw?url=' + encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/GC=F?interval=${interval}&range=${range}`)
-  ];
-  for (const ep of endpoints) {
-    try {
-      const r = await safeFetch(ep, 12000);
-      if (!r.ok) continue;
-      const d = await r.json();
-      const res = d.chart?.result?.[0];
-      if (!res) continue;
-      const q = res.indicators.quote[0];
-      const ts = res.timestamp;
-      const bars = [];
-      for (let i = 0; i < ts.length; i++) {
-        if (q.close[i] == null) continue;
-        bars.push({ t: ts[i]*1000, o: q.open[i], h: q.high[i], l: q.low[i], c: q.close[i] });
-      }
-      if (bars.length > 0) return bars;
-    } catch(e) { continue; }
-  }
-  return null;
-}
-
-// ── GET LIVE PRICE ──
-async function getLivePrice() {
-  const apis = [tryMetalsAPI, tryOpenGold, tryAllOrigins, tryExchangeAPI];
-  const names = ['Yahoo/Proxy1','GoldPrice.org','Yahoo/Proxy2','GoldPrice/P2'];
-  for (let i = 0; i < apis.length; i++) {
-    setLoadMsg(`Mencuba API ${i+1}/${apis.length}...`);
-    try {
-      const res = await apis[i]();
-      if (res && res.price && res.price > 100) {
-        apiName = names[i];
-        return res.price;
-      }
-    } catch(e) { continue; }
-  }
-  return null;
-}
 
 function setLoadMsg(msg) {
   const el = document.getElementById('loadMsg');
   if (el) el.textContent = msg;
 }
 
-// ── BUILD CANDLES ──
+// SAFE FETCH
+async function safeFetch(url, timeout=10000) {
+  const ctrl = new AbortController();
+  const id = setTimeout(() => ctrl.abort(), timeout);
+  try {
+    const r = await fetch(url, { signal: ctrl.signal });
+    clearTimeout(id);
+    return r;
+  } catch(e) { clearTimeout(id); throw e; }
+}
+
+// PROXIES
+const PROXIES = [
+  u => 'https://corsproxy.io/?' + encodeURIComponent(u),
+  u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+  u => 'https://thingproxy.freeboard.io/fetch/' + u,
+];
+
+async function fetchWithProxy(url) {
+  // Try direct first
+  try {
+    const r = await safeFetch(url, 6000);
+    if (r.ok) return await r.json();
+  } catch(e) {}
+  // Try proxies
+  for (const proxy of PROXIES) {
+    try {
+      const r = await safeFetch(proxy(url), 10000);
+      if (r.ok) {
+        const text = await r.text();
+        return JSON.parse(text);
+      }
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
+// GET SPOT PRICE - Multiple sources
+async function getSpotPrice() {
+  // Source 1: goldprice.org (real spot price ~3300)
+  setLoadMsg('Cuba GoldPrice.org...');
+  try {
+    const d = await fetchWithProxy('https://data-asg.goldprice.org/dbXRates/USD');
+    if (d && d.items && d.items[0].xauPrice) {
+      const p = parseFloat(d.items[0].xauPrice);
+      if (p > 1000 && p < 5000) {
+        apiName = 'GoldPrice.org';
+        return p;
+      }
+    }
+  } catch(e) {}
+
+  // Source 2: metals.live
+  setLoadMsg('Cuba Metals.live...');
+  try {
+    const d = await fetchWithProxy('https://metals.live/api/spot');
+    if (d && d.gold) {
+      const p = parseFloat(d.gold);
+      if (p > 1000 && p < 5000) {
+        apiName = 'Metals.live';
+        return p;
+      }
+    }
+  } catch(e) {}
+
+  // Source 3: Yahoo Finance GC=F (futures, close to spot)
+  setLoadMsg('Cuba Yahoo Finance...');
+  try {
+    const d = await fetchWithProxy('https://query1.finance.yahoo.com/v8/finance/chart/XAUUSD=X?interval=1m&range=1d');
+    if (d) {
+      const q = d.chart?.result?.[0]?.indicators?.quote?.[0];
+      if (q) {
+        const closes = q.close.filter(x => x != null);
+        if (closes.length > 0) {
+          const p = closes[closes.length-1];
+          if (p > 1000 && p < 5000) {
+            apiName = 'Yahoo XAUUSD';
+            return p;
+          }
+        }
+      }
+    }
+  } catch(e) {}
+
+  // Source 4: Yahoo Finance spot symbol
+  setLoadMsg('Cuba Yahoo Spot...');
+  try {
+    const d = await fetchWithProxy('https://query2.finance.yahoo.com/v8/finance/chart/GLD?interval=1d&range=2d');
+    if (d) {
+      const q = d.chart?.result?.[0]?.indicators?.quote?.[0];
+      if (q) {
+        const closes = q.close.filter(x => x != null);
+        if (closes.length > 0) {
+          // GLD ETF * 10 ≈ gold price
+          const p = closes[closes.length-1] * 10;
+          if (p > 1000 && p < 5000) {
+            apiName = 'Yahoo GLD×10';
+            return p;
+          }
+        }
+      }
+    }
+  } catch(e) {}
+
+  return null;
+}
+
+// FETCH HISTORY
+async function fetchHistory(symbol, interval, range) {
+  const urls = [
+    `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`,
+    `https://query2.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`,
+  ];
+  for (const url of urls) {
+    try {
+      const d = await fetchWithProxy(url);
+      if (!d) continue;
+      const res = d.chart?.result?.[0];
+      if (!res) continue;
+      const q = res.indicators.quote[0];
+      const ts = res.timestamp;
+      const bars = [];
+      for (let i = 0; i < ts.length; i++) {
+        if (q.close[i] == null || q.open[i] == null) continue;
+        bars.push({ t: ts[i]*1000, o: q.open[i], h: q.high[i], l: q.low[i], c: q.close[i] });
+      }
+      if (bars.length >= 2) return bars;
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
+// BUILD ALL CANDLES (M15, M30, H1, H4, Daily, Weekly)
 async function buildCandles() {
-  setLoadMsg('Membina candle H1...');
-  const h1 = await fetchHistory('5d', '1h');
-  if (h1 && h1.length >= 2) {
-    candles.H1 = { closed: h1[h1.length-2], current: h1[h1.length-1] };
+  const sym = 'XAUUSD=X'; // Spot symbol - more accurate
+
+  setLoadMsg('Bina candle M15...');
+  const m15bars = await fetchHistory(sym, '15m', '2d');
+  if (m15bars && m15bars.length >= 2) {
+    candles.M15 = { closed: m15bars[m15bars.length-2], current: m15bars[m15bars.length-1] };
   }
 
-  setLoadMsg('Membina candle H4...');
-  const h1raw = await fetchHistory('1mo', '1h');
-  if (h1raw && h1raw.length >= 4) {
-    const h4bars = [];
-    for (let i = 0; i + 3 < h1raw.length; i += 4) {
-      const g = h1raw.slice(i, i+4);
-      h4bars.push({
+  setLoadMsg('Bina candle M30...');
+  // Build M30 from M15 bars
+  if (m15bars && m15bars.length >= 4) {
+    const m30bars = [];
+    for (let i = 0; i + 1 < m15bars.length; i += 2) {
+      const g = m15bars.slice(i, i+2);
+      m30bars.push({
         t: g[0].t, o: g[0].o,
         h: Math.max(...g.map(x=>x.h)),
         l: Math.min(...g.map(x=>x.l)),
         c: g[g.length-1].c
       });
     }
+    if (m30bars.length >= 2) candles.M30 = { closed: m30bars[m30bars.length-2], current: m30bars[m30bars.length-1] };
+  } else {
+    const m30bars = await fetchHistory(sym, '30m', '5d');
+    if (m30bars && m30bars.length >= 2) {
+      candles.M30 = { closed: m30bars[m30bars.length-2], current: m30bars[m30bars.length-1] };
+    }
+  }
+
+  setLoadMsg('Bina candle H1...');
+  const h1bars = await fetchHistory(sym, '1h', '5d');
+  if (h1bars && h1bars.length >= 2) {
+    candles.H1 = { closed: h1bars[h1bars.length-2], current: h1bars[h1bars.length-1] };
+  }
+
+  setLoadMsg('Bina candle H4...');
+  const h1raw = await fetchHistory(sym, '1h', '1mo');
+  if (h1raw && h1raw.length >= 4) {
+    const h4bars = [];
+    for (let i = 0; i+3 < h1raw.length; i += 4) {
+      const g = h1raw.slice(i, i+4);
+      h4bars.push({ t:g[0].t, o:g[0].o, h:Math.max(...g.map(x=>x.h)), l:Math.min(...g.map(x=>x.l)), c:g[g.length-1].c });
+    }
     if (h4bars.length >= 2) candles.H4 = { closed: h4bars[h4bars.length-2], current: h4bars[h4bars.length-1] };
   }
 
-  setLoadMsg('Membina candle Daily...');
-  const daily = await fetchHistory('1mo', '1d');
-  if (daily && daily.length >= 2) {
-    candles.Daily = { closed: daily[daily.length-2], current: daily[daily.length-1] };
+  setLoadMsg('Bina candle Daily...');
+  const dbars = await fetchHistory(sym, '1d', '1mo');
+  if (dbars && dbars.length >= 2) {
+    candles.Daily = { closed: dbars[dbars.length-2], current: dbars[dbars.length-1] };
   }
 
-  setLoadMsg('Membina candle Weekly...');
-  const weekly = await fetchHistory('6mo', '1wk');
-  if (weekly && weekly.length >= 2) {
-    candles.Weekly = { closed: weekly[weekly.length-2], current: weekly[weekly.length-1] };
+  setLoadMsg('Bina candle Weekly...');
+  const wbars = await fetchHistory(sym, '1wk', '6mo');
+  if (wbars && wbars.length >= 2) {
+    candles.Weekly = { closed: wbars[wbars.length-2], current: wbars[wbars.length-1] };
   }
 
   initialized = true;
 }
 
-// ── GENERATE SIGNAL ──
+// GENERATE SIGNAL
 function genSignal(tf) {
   const c = candles[tf];
   if (!c || !c.closed || !price) return null;
   const bar = c.closed;
   const range = bar.h - bar.l;
   if (range <= 0) return null;
+
   const bull = bar.c > bar.o;
   const dir = bull ? 'BUY' : 'SELL';
-  const mult = { H1:1, H4:2.5, Daily:5, Weekly:12 }[tf] || 1;
+  const mult = { M15:0.3, M30:0.5, H1:1, H4:2.5, Daily:5, Weekly:12 }[tf] || 1;
 
   let entry, sl, tp1, tp2;
   if (dir === 'BUY') {
@@ -501,9 +510,9 @@ function genSignal(tf) {
   return { dir, entry: entry.toFixed(2), sl: sl.toFixed(2), tp1: tp1.toFixed(2), tp2: tp2.toFixed(2), rr };
 }
 
-// ── RENDER ──
-const TFS = ['H1','H4','Daily','Weekly'];
-const ICONS = { H1:'⏱️', H4:'🕓', Daily:'📆', Weekly:'📅' };
+// RENDER
+const TFS = ['M15','M30','H1','H4','Daily','Weekly'];
+const ICONS = { M15:'⚡', M30:'🕐', H1:'⏱️', H4:'🕓', Daily:'📆', Weekly:'📅' };
 
 function renderAll() {
   renderSignals();
@@ -585,17 +594,17 @@ function renderWeekly() {
 
 function updateStatus() {
   const now = new Date();
-  const pad = x => String(x).padStart(2,'0');
-  document.getElementById('updateVal').textContent = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
+  const p = x => String(x).padStart(2,'0');
+  document.getElementById('updateVal').textContent = `${p(now.getUTCHours())}:${p(now.getUTCMinutes())}`;
   document.getElementById('spreadVal').textContent = '~20';
   document.getElementById('apiVal').textContent = apiName.split('/')[0];
   document.getElementById('apiSrc').textContent = 'Sumber: ' + apiName;
 }
 
-// ── PRICE UPDATE LOOP ──
+// MAIN LOOP
 async function updatePrice() {
-  const p = await getLivePrice();
-  if (p && p > 100) {
+  const p = await getSpotPrice();
+  if (p && p > 1000) {
     prevPrice = price;
     price = p;
     document.getElementById('livePrice').textContent = p.toFixed(2);
@@ -613,11 +622,12 @@ async function updatePrice() {
     renderAll();
   } else {
     retryCount++;
-    setLoadMsg(`Gagal. Cuba semula (${retryCount})...`);
+    setLoadMsg(`Gagal ambil harga. Cuba semula (${retryCount})...`);
+    setTimeout(updatePrice, 5000);
   }
 }
 
-// ── COPY ──
+// COPY
 function copySignal(s, tf) {
   const txt = `⚡ XAU/USD SIGNAL [${tf}]\n📌 ARAH: ${s.dir}\n🟢 ENTRY: ${s.entry}\n🔴 SL: ${s.sl}\n✅ TP1: ${s.tp1}\n✅ TP2: ${s.tp2}\n📊 RR: 1:${s.rr}\n\n[XAU/USD SMART v3]`;
   if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(()=>{});
@@ -629,13 +639,12 @@ function copyWeekly() {
 }
 function showToast() {
   const t = document.getElementById('toast');
-  t.classList.remove('show');
-  void t.offsetWidth;
+  t.classList.remove('show'); void t.offsetWidth;
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 2200);
 }
 
-// ── TAB ──
+// TAB
 function switchTab(name, el) {
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-i').forEach(n=>n.classList.remove('active'));
@@ -643,7 +652,7 @@ function switchTab(name, el) {
   el.classList.add('active');
 }
 
-// ── KIRA ──
+// KIRA
 function kiraLot() {
   const modal = parseFloat(document.getElementById('kModal').value)||0;
   const risk  = parseFloat(document.getElementById('kRisk').value)||1;
@@ -662,7 +671,7 @@ function kiraLot() {
   res.classList.add('show');
 }
 
-// ── START ──
+// START
 updatePrice();
 setInterval(updatePrice, 30000);
 </script>

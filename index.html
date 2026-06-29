@@ -1,1 +1,720 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>XAU/USD SMART v3</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --card: #111118;
+  --card2: #16161f;
+  --border: #2a2a3a;
+  --gold: #f5c518;
+  --gold2: #e0a800;
+  --green: #00e676;
+  --red: #ff1744;
+  --cyan: #00bcd4;
+  --purple: #b388ff;
+  --text: #e0e0e0;
+  --muted: #666680;
+  --orange: #ff9800;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Courier New', monospace; min-height: 100vh; padding-bottom: 75px; }
 
+.header {
+  background: linear-gradient(135deg, #0d0d1a, #1a1a2e);
+  border-bottom: 1px solid var(--gold);
+  padding: 10px 14px;
+  position: sticky; top: 0; z-index: 100;
+}
+.h-row1 { display: flex; justify-content: space-between; align-items: center; }
+.title { color: var(--gold); font-size: 16px; font-weight: bold; letter-spacing: 2px; }
+.live-badge { display: flex; align-items: center; gap: 5px; color: var(--green); font-size: 12px; font-weight: bold; }
+.live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
+.h-row2 { display: flex; justify-content: space-between; margin-top: 4px; font-size: 10px; color: var(--muted); }
+.price-big { font-size: 24px; font-weight: bold; color: var(--gold); }
+.price-chg { font-size: 11px; margin-left: 6px; }
+.up{color:var(--green)} .down{color:var(--red)}
+
+/* NFP BANNER */
+.nfp-bar {
+  background: linear-gradient(90deg, rgba(255,152,0,0.15), rgba(255,152,0,0.05));
+  border: 1px solid var(--orange);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 10px 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nfp-label { color: var(--orange); font-size: 11px; font-weight: bold; letter-spacing: 1px; }
+.nfp-time { color: var(--text); font-size: 12px; font-weight: bold; }
+.nfp-sub { color: var(--muted); font-size: 10px; margin-top: 2px; }
+.nfp-urgent { color: var(--red); animation: blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.content { padding: 10px; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.sig-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+.sig-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--card2); border-bottom: 1px solid var(--border); }
+.sig-tf { color: var(--gold); font-size: 13px; font-weight: bold; letter-spacing: 1px; }
+.badge { padding: 3px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; letter-spacing: 2px; }
+.badge.BUY { background: rgba(0,230,118,.15); color: var(--green); border: 1px solid var(--green); }
+.badge.SELL { background: rgba(255,23,68,.15); color: var(--red); border: 1px solid var(--red); }
+.badge.WAIT { background: rgba(245,197,24,.1); color: var(--gold); border: 1px solid var(--gold2); animation: blink 1.2s infinite; }
+.sig-body { padding: 12px; }
+.sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.sf-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 3px; }
+.sf-val { font-size: 15px; font-weight: bold; }
+.c-entry{color:var(--cyan)} .c-sl{color:var(--red)} .c-tp{color:var(--green)}
+.c-rr{color:var(--purple)} .c-buy{color:var(--green)} .c-sell{color:var(--red)}
+.copy-btn { width:100%; padding:9px; background:rgba(245,197,24,.07); border:1px solid var(--gold2); border-radius:7px; color:var(--gold); font-family:'Courier New',monospace; font-size:12px; cursor:pointer; letter-spacing:1px; }
+.copy-btn:active { background:rgba(245,197,24,.2); }
+
+.status-row { display:flex; justify-content:space-between; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:8px 12px; margin-bottom:10px; font-size:10px; }
+.si-label{color:var(--muted);margin-bottom:2px;}
+.si-val{color:var(--gold);font-weight:bold;font-size:11px;}
+
+.section-box { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:10px; }
+.sec-title{color:var(--gold);font-size:11px;letter-spacing:2px;margin-bottom:10px;font-weight:bold;}
+table{width:100%;border-collapse:collapse;font-size:11px;}
+th{color:var(--muted);text-align:left;padding:3px 5px;letter-spacing:1px;border-bottom:1px solid var(--border);}
+td{padding:5px 5px;border-bottom:1px solid rgba(42,42,58,.4);}
+.tf-cell{color:var(--gold);font-weight:bold;}
+.bull{color:var(--green);} .bear{color:var(--red);}
+
+/* ECONOMIC CALENDAR */
+.eco-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.eco-item:last-child { border-bottom: none; }
+.eco-row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.eco-name { font-size: 12px; color: var(--text); font-weight: bold; }
+.eco-impact { padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+.eco-impact.high { background: rgba(255,23,68,.2); color: var(--red); border: 1px solid var(--red); }
+.eco-impact.medium { background: rgba(255,152,0,.2); color: var(--orange); border: 1px solid var(--orange); }
+.eco-impact.low { background: rgba(0,230,118,.1); color: var(--green); border: 1px solid var(--green); }
+.eco-row2 { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); }
+.eco-countdown { color: var(--cyan); }
+
+.kira-label{font-size:10px;color:var(--muted);margin-bottom:4px;letter-spacing:1px;}
+.kira-in { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'Courier New',monospace; font-size:14px; padding:8px 10px; margin-bottom:10px; }
+.kira-btn { width:100%; padding:11px; background:var(--gold); color:#000; border:none; border-radius:7px; font-family:'Courier New',monospace; font-size:13px; font-weight:bold; cursor:pointer; letter-spacing:1px; }
+.kira-result{margin-top:10px;padding:10px;background:var(--card2);border-radius:7px;font-size:12px;line-height:1.9;display:none;}
+.kira-result.show{display:block;}
+
+.toast { position:fixed; bottom:85px; left:50%; transform:translateX(-50%); background:var(--gold); color:#000; padding:9px 20px; border-radius:20px; font-size:12px; font-weight:bold; display:none; z-index:999; }
+.toast.show{display:block;animation:fio 2.2s forwards;}
+@keyframes fio { 0%{opacity:0;transform:translateX(-50%) translateY(8px)} 15%{opacity:1;transform:translateX(-50%) translateY(0)} 80%{opacity:1} 100%{opacity:0} }
+
+.nav { position:fixed; bottom:0; left:0; right:0; background:#0d0d1a; border-top:1px solid var(--border); display:flex; z-index:100; }
+.nav-i { flex:1; display:flex; flex-direction:column; align-items:center; padding:8px 4px 6px; font-size:9px; color:var(--muted); cursor:pointer; letter-spacing:1px; }
+.nav-i.active{color:var(--gold);}
+.nav-ico{font-size:18px;margin-bottom:2px;}
+
+.loading-box { text-align:center; padding:30px 20px; color:var(--muted); font-size:12px; }
+.loading-spin { font-size:30px; animation: spin 2s linear infinite; display:block; margin-bottom:10px; }
+@keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="h-row1">
+    <div class="title">⚡ XAU/USD SMART v3</div>
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  </div>
+  <div class="h-row2">
+    <span id="apiSrc">Connecting...</span>
+    <span id="clock">--:--:-- UTC</span>
+  </div>
+  <div style="margin-top:6px;display:flex;align-items:center;">
+    <span class="price-big" id="livePrice">------</span>
+    <span class="price-chg" id="priceChg"></span>
+  </div>
+</div>
+
+<!-- NFP BAR -->
+<div class="nfp-bar" id="nfpBar">
+  <div>
+    <div class="nfp-label">📅 NFP SETERUSNYA</div>
+    <div class="nfp-sub" id="nfpDate">Non-Farm Payrolls</div>
+  </div>
+  <div style="text-align:right">
+    <div class="nfp-time" id="nfpCountdown">--</div>
+    <div class="nfp-sub">8:30 AM ET</div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- SIGNAL TAB -->
+<div id="tab-signal" class="tab-content active">
+  <div id="sigContainer">
+    <div class="loading-box">
+      <span class="loading-spin">⚡</span>
+      <div style="color:var(--gold);font-size:13px;margin-bottom:8px;">Memuatkan signal...</div>
+      <div id="loadMsg">Ambil harga XAU/USD...</div>
+    </div>
+  </div>
+  <div class="status-row">
+    <div><div class="si-label">SPREAD</div><div class="si-val" id="spreadVal">--</div></div>
+    <div><div class="si-label">KEMASKINI</div><div class="si-val" id="updateVal">--</div></div>
+    <div><div class="si-label">SUMBER</div><div class="si-val" id="apiVal">--</div></div>
+  </div>
+</div>
+
+<!-- CANDLE TAB -->
+<div id="tab-candle" class="tab-content">
+  <div class="section-box">
+    <div class="sec-title">📊 DATA CANDLE</div>
+    <table>
+      <thead><tr><th>TF</th><th>BUKA</th><th>TINGGI</th><th>RENDAH</th><th>TUTUP</th><th>↕</th></tr></thead>
+      <tbody id="candleTbody"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:15px;">Memuatkan...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- WEEKLY TAB -->
+<div id="tab-weekly" class="tab-content">
+  <div class="sig-card">
+    <div class="sig-head">
+      <span class="sig-tf">📅 WEEKLY SIGNAL</span>
+      <span class="badge WAIT" id="wDir">WAIT</span>
+    </div>
+    <div class="sig-body">
+      <div class="sig-grid">
+        <div><div class="sf-label">ENTRY</div><div class="sf-val c-entry" id="wEntry">--</div></div>
+        <div><div class="sf-label">STOP LOSS</div><div class="sf-val c-sl" id="wSL">--</div></div>
+        <div><div class="sf-label">TP 1</div><div class="sf-val c-tp" id="wTP1">--</div></div>
+        <div><div class="sf-label">TP 2</div><div class="sf-val c-tp" id="wTP2">--</div></div>
+        <div><div class="sf-label">RISK:REWARD</div><div class="sf-val c-rr" id="wRR">--</div></div>
+        <div><div class="sf-label">ARAH</div><div class="sf-val" id="wArah">--</div></div>
+      </div>
+      <button class="copy-btn" onclick="copyWeekly()">📋 Copy Signal untuk Broker</button>
+    </div>
+  </div>
+
+  <!-- ECONOMIC CALENDAR -->
+  <div class="section-box">
+    <div class="sec-title">📰 ECONOMIC CALENDAR</div>
+    <div id="ecoCalendar">
+      <div class="loading-box" style="padding:15px;">
+        <div style="color:var(--muted);font-size:11px;">Memuatkan kalendar...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KIRA TAB -->
+<div id="tab-kira" class="tab-content">
+  <div class="section-box">
+    <div class="sec-title">🧮 KIRA LOT & RISIKO</div>
+    <div class="kira-label">MODAL (USD)</div>
+    <input class="kira-in" type="number" id="kModal" value="1000" placeholder="cth: 1000">
+    <div class="kira-label">RISIKO % PER TRADE</div>
+    <input class="kira-in" type="number" id="kRisk" value="1" step="0.1" placeholder="cth: 1">
+    <div class="kira-label">STOP LOSS (PIPS)</div>
+    <input class="kira-in" type="number" id="kSL" placeholder="cth: 150">
+    <button class="kira-btn" onclick="kiraLot()">⚡ KIRA SEKARANG</button>
+    <div class="kira-result" id="kiraRes"></div>
+  </div>
+</div>
+
+<!-- BROKER TAB -->
+<div id="tab-broker" class="tab-content">
+  <div class="section-box">
+    <div class="sec-title">🔗 MAKLUMAT BROKER</div>
+    <div style="font-size:12px;line-height:2.2;color:var(--muted);">
+      <div>Pasangan: <span style="color:var(--gold)">XAU/USD (EMAS)</span></div>
+      <div>Nilai Pip: <span style="color:var(--cyan)">~$1 per 0.01 lot per pip</span></div>
+      <div>Spread Biasa: <span style="color:var(--green)">15–30 pips</span></div>
+      <div>Lot Minimum: <span style="color:var(--text)">0.01</span></div>
+      <div>Sesi Terbaik: <span style="color:var(--text)">London & New York</span></div>
+      <br>
+      <div style="color:var(--orange);font-weight:bold;">⚠️ TARIKH PENTING 2026</div>
+      <div style="margin-top:8px;font-size:11px;line-height:2;">
+        <div>📅 NFP: Jumaat pertama setiap bulan</div>
+        <div>📅 FOMC: 6 kali setahun</div>
+        <div>📅 CPI: Pertengahan bulan</div>
+      </div>
+      <br>
+      <div style="color:var(--gold)">⚠️ PERINGATAN RISIKO</div>
+      <div style="font-size:11px;margin-top:6px;line-height:1.8;">Signal ini untuk maklumat sahaja. Dagangan melibatkan risiko tinggi. Buat keputusan sendiri.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="nav">
+  <div class="nav-i active" onclick="switchTab('signal',this)"><div class="nav-ico">📡</div>SIGNAL</div>
+  <div class="nav-i" onclick="switchTab('candle',this)"><div class="nav-ico">🔨</div>CANDLE</div>
+  <div class="nav-i" onclick="switchTab('weekly',this)"><div class="nav-ico">📅</div>WEEKLY</div>
+  <div class="nav-i" onclick="switchTab('kira',this)"><div class="nav-ico">🧮</div>KIRA</div>
+  <div class="nav-i" onclick="switchTab('broker',this)"><div class="nav-ico">🔗</div>BROKER</div>
+</div>
+
+<div class="toast" id="toast">✅ Signal disalin!</div>
+
+<script>
+// ── STATE ──
+let price = null, prevPrice = null;
+let candles = {};
+let apiName = '--';
+let initialized = false;
+
+// ── CLOCK ──
+function tick() {
+  const n = new Date();
+  const p = x => String(x).padStart(2,'0');
+  document.getElementById('clock').textContent = `${p(n.getUTCHours())}:${p(n.getUTCMinutes())}:${p(n.getUTCSeconds())} UTC`;
+}
+setInterval(tick, 1000); tick();
+
+function setLoadMsg(m) { const e = document.getElementById('loadMsg'); if(e) e.textContent = m; }
+
+// ── NFP COUNTDOWN ──
+function getNextNFP() {
+  // NFP = first Friday of each month
+  const now = new Date();
+  const months = [];
+  for (let m = 0; m < 3; m++) {
+    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + m, 1));
+    // Find first Friday
+    while (d.getUTCDay() !== 5) d.setUTCDate(d.getUTCDate() + 1);
+    // NFP at 12:30 UTC (8:30 AM ET)
+    d.setUTCHours(12, 30, 0, 0);
+    if (d > now) { months.push(d); break; }
+  }
+  return months[0] || null;
+}
+
+function updateNFP() {
+  const nfp = getNextNFP();
+  if (!nfp) return;
+  const now = new Date();
+  const diff = nfp - now;
+  if (diff <= 0) return;
+
+  const days = Math.floor(diff / 86400000);
+  const hrs  = Math.floor((diff % 86400000) / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+
+  const cdEl = document.getElementById('nfpCountdown');
+  const dateEl = document.getElementById('nfpDate');
+
+  // Format date
+  const months = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogs','Sep','Okt','Nov','Dis'];
+  dateEl.textContent = `${nfp.getUTCDate()} ${months[nfp.getUTCMonth()]} ${nfp.getUTCFullYear()}`;
+
+  if (days === 0 && hrs < 2) {
+    cdEl.textContent = `${hrs}j ${mins}m ⚠️`;
+    cdEl.className = 'nfp-time nfp-urgent';
+  } else if (days === 0) {
+    cdEl.textContent = `${hrs}j ${mins}m`;
+    cdEl.className = 'nfp-time up';
+  } else {
+    cdEl.textContent = `${days}h ${hrs}j ${mins}m`;
+    cdEl.className = 'nfp-time';
+  }
+}
+updateNFP();
+setInterval(updateNFP, 60000);
+
+// ── ECONOMIC CALENDAR (static + dynamic) ──
+function renderEcoCalendar() {
+  const now = new Date();
+  const nfp = getNextNFP();
+
+  // Calculate next FOMC (approx - every ~6 weeks)
+  // 2026 FOMC dates (approximate)
+  const fomcDates = [
+    new Date(Date.UTC(2026, 0, 28, 19, 0)),
+    new Date(Date.UTC(2026, 2, 18, 18, 0)),
+    new Date(Date.UTC(2026, 4, 6, 18, 0)),
+    new Date(Date.UTC(2026, 5, 17, 18, 0)),
+    new Date(Date.UTC(2026, 6, 29, 18, 0)),
+    new Date(Date.UTC(2026, 8, 16, 18, 0)),
+    new Date(Date.UTC(2026, 10, 4, 19, 0)),
+    new Date(Date.UTC(2026, 11, 16, 19, 0)),
+  ];
+  const nextFOMC = fomcDates.find(d => d > now);
+
+  // CPI - usually 2nd Wednesday of month at 12:30 UTC
+  function getNextCPI() {
+    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 12, 30));
+    let count = 0;
+    while (count < 2) { if (d.getUTCDay() === 3) count++; if (count < 2) d.setUTCDate(d.getUTCDate() + 1); }
+    if (d <= now) {
+      d.setUTCMonth(d.getUTCMonth() + 1); d.setUTCDate(1);
+      count = 0;
+      while (count < 2) { if (d.getUTCDay() === 3) count++; if (count < 2) d.setUTCDate(d.getUTCDate() + 1); }
+    }
+    return d;
+  }
+  const nextCPI = getNextCPI();
+
+  function fmtCountdown(dt) {
+    if (!dt) return '--';
+    const diff = dt - now;
+    if (diff < 0) return 'Berlalu';
+    const days = Math.floor(diff / 86400000);
+    const hrs = Math.floor((diff % 86400000) / 3600000);
+    if (days > 0) return `${days}h ${hrs}j lagi`;
+    return `${hrs}j lagi`;
+  }
+
+  function fmtDate(dt) {
+    if (!dt) return '--';
+    const months = ['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogs','Sep','Okt','Nov','Dis'];
+    return `${dt.getUTCDate()} ${months[dt.getUTCMonth()]}`;
+  }
+
+  const events = [
+    { name: '🇺🇸 NFP (Non-Farm Payrolls)', impact: 'high', date: nfp, time: '12:30 UTC' },
+    { name: '🏦 FOMC Meeting', impact: 'high', date: nextFOMC, time: '18:00 UTC' },
+    { name: '📊 US CPI', impact: 'high', date: nextCPI, time: '12:30 UTC' },
+  ].sort((a,b) => (a.date||0) - (b.date||0));
+
+  let html = '';
+  for (const ev of events) {
+    html += `<div class="eco-item">
+      <div class="eco-row1">
+        <span class="eco-name">${ev.name}</span>
+        <span class="eco-impact ${ev.impact}">${ev.impact.toUpperCase()}</span>
+      </div>
+      <div class="eco-row2">
+        <span>${fmtDate(ev.date)} · ${ev.time}</span>
+        <span class="eco-countdown">${fmtCountdown(ev.date)}</span>
+      </div>
+    </div>`;
+  }
+  document.getElementById('ecoCalendar').innerHTML = html;
+}
+renderEcoCalendar();
+setInterval(renderEcoCalendar, 60000);
+
+// ── FETCH HELPERS ──
+const PROXIES = [
+  u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+];
+
+async function fetchJSON(url, timeout=8000) {
+  // Try direct
+  try {
+    const ctrl = new AbortController();
+    setTimeout(() => ctrl.abort(), timeout);
+    const r = await fetch(url, { signal: ctrl.signal });
+    if (r.ok) return await r.json();
+  } catch(e) {}
+  // Try proxies
+  for (const px of PROXIES) {
+    try {
+      const ctrl = new AbortController();
+      setTimeout(() => ctrl.abort(), timeout);
+      const r = await fetch(px(url), { signal: ctrl.signal });
+      if (r.ok) { const t = await r.text(); return JSON.parse(t); }
+    } catch(e) { continue; }
+  }
+  return null;
+}
+
+// ── GET PRICE - Fast parallel fetch ──
+async function getPrice() {
+  // Race multiple sources
+  const sources = [
+    // Source 1: GoldPrice.org spot
+    fetchJSON('https://data-asg.goldprice.org/dbXRates/USD', 6000)
+      .then(d => d?.items?.[0]?.xauPrice)
+      .then(p => p > 1000 && p < 5000 ? { p, src: 'GoldPrice.org' } : null)
+      .catch(() => null),
+
+    // Source 2: Yahoo XAUUSD=X spot
+    fetchJSON('https://query1.finance.yahoo.com/v8/finance/chart/XAUUSD=X?interval=1m&range=1d', 8000)
+      .then(d => {
+        const q = d?.chart?.result?.[0]?.indicators?.quote?.[0];
+        if (!q) return null;
+        const closes = q.close.filter(x => x != null);
+        const p = closes[closes.length-1];
+        return p > 1000 && p < 5000 ? { p, src: 'Yahoo Spot' } : null;
+      }).catch(() => null),
+
+    // Source 3: Yahoo GLD ETF * 10
+    fetchJSON('https://query2.finance.yahoo.com/v8/finance/chart/GLD?interval=1d&range=2d', 8000)
+      .then(d => {
+        const q = d?.chart?.result?.[0]?.indicators?.quote?.[0];
+        if (!q) return null;
+        const closes = q.close.filter(x => x != null);
+        const p = closes[closes.length-1] * 10;
+        return p > 1000 && p < 5000 ? { p, src: 'Yahoo GLD×10' } : null;
+      }).catch(() => null),
+  ];
+
+  // Get first valid result
+  for (const src of sources) {
+    const res = await src;
+    if (res) return res;
+  }
+  return null;
+}
+
+// ── FETCH HISTORY ──
+async function fetchBars(interval, range) {
+  const syms = ['XAUUSD=X', 'GC=F'];
+  for (const sym of syms) {
+    const d = await fetchJSON(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?interval=${interval}&range=${range}`, 10000);
+    if (!d) continue;
+    const res = d.chart?.result?.[0];
+    if (!res) continue;
+    const q = res.indicators.quote[0];
+    const ts = res.timestamp;
+    const bars = [];
+    for (let i = 0; i < ts.length; i++) {
+      if (q.close[i]==null||q.open[i]==null) continue;
+      bars.push({ t: ts[i]*1000, o: q.open[i], h: q.high[i], l: q.low[i], c: q.close[i] });
+    }
+    if (bars.length >= 3) return bars;
+  }
+  return null;
+}
+
+// ── BUILD CANDLES - Fast parallel ──
+async function buildCandles() {
+  setLoadMsg('Bina semua candle serentak...');
+
+  // Fetch all in parallel
+  const [m15raw, h1raw, h1mo, daily, weekly] = await Promise.all([
+    fetchBars('15m', '2d'),
+    fetchBars('1h', '5d'),
+    fetchBars('1h', '1mo'),
+    fetchBars('1d', '1mo'),
+    fetchBars('1wk', '6mo'),
+  ]);
+
+  // M15
+  if (m15raw?.length >= 2) {
+    candles.M15 = { closed: m15raw[m15raw.length-2], current: m15raw[m15raw.length-1] };
+  }
+
+  // M30 from M15
+  if (m15raw?.length >= 4) {
+    const m30 = [];
+    for (let i = 0; i+1 < m15raw.length; i+=2) {
+      const g = m15raw.slice(i,i+2);
+      m30.push({ t:g[0].t, o:g[0].o, h:Math.max(...g.map(x=>x.h)), l:Math.min(...g.map(x=>x.l)), c:g[g.length-1].c });
+    }
+    if (m30.length >= 2) candles.M30 = { closed: m30[m30.length-2], current: m30[m30.length-1] };
+  }
+
+  // H1
+  if (h1raw?.length >= 2) {
+    candles.H1 = { closed: h1raw[h1raw.length-2], current: h1raw[h1raw.length-1] };
+  }
+
+  // H4 from 1mo hourly
+  if (h1mo?.length >= 4) {
+    const h4 = [];
+    for (let i = 0; i+3 < h1mo.length; i+=4) {
+      const g = h1mo.slice(i,i+4);
+      h4.push({ t:g[0].t, o:g[0].o, h:Math.max(...g.map(x=>x.h)), l:Math.min(...g.map(x=>x.l)), c:g[g.length-1].c });
+    }
+    if (h4.length >= 2) candles.H4 = { closed: h4[h4.length-2], current: h4[h4.length-1] };
+  }
+
+  // Daily
+  if (daily?.length >= 2) {
+    candles.Daily = { closed: daily[daily.length-2], current: daily[daily.length-1] };
+  }
+
+  // Weekly
+  if (weekly?.length >= 2) {
+    candles.Weekly = { closed: weekly[weekly.length-2], current: weekly[weekly.length-1] };
+  }
+
+  initialized = true;
+}
+
+// ── SIGNAL ──
+function genSignal(tf) {
+  const c = candles[tf];
+  if (!c?.closed || !price) return null;
+  const bar = c.closed;
+  const range = bar.h - bar.l;
+  if (range <= 0) return null;
+  const dir = bar.c > bar.o ? 'BUY' : 'SELL';
+  const mult = { M15:0.3, M30:0.5, H1:1, H4:2.5, Daily:5, Weekly:12 }[tf] || 1;
+  let sl, tp1, tp2;
+  if (dir==='BUY') {
+    sl  = +(price - range*0.5*mult).toFixed(2);
+    tp1 = +(price + range*1.0*mult).toFixed(2);
+    tp2 = +(price + range*2.0*mult).toFixed(2);
+  } else {
+    sl  = +(price + range*0.5*mult).toFixed(2);
+    tp1 = +(price - range*1.0*mult).toFixed(2);
+    tp2 = +(price - range*2.0*mult).toFixed(2);
+  }
+  const risk = Math.abs(price-sl), reward = Math.abs(tp1-price);
+  const rr = risk>0 ? (reward/risk).toFixed(2) : '--';
+  return { dir, entry: price.toFixed(2), sl: sl.toFixed(2), tp1: tp1.toFixed(2), tp2: tp2.toFixed(2), rr };
+}
+
+// ── RENDER ──
+const TFS = ['M15','M30','H1','H4','Daily','Weekly'];
+const ICONS = { M15:'⚡', M30:'🕐', H1:'⏱️', H4:'🕓', Daily:'📆', Weekly:'📅' };
+
+function renderSignals() {
+  if (!initialized || !price) return;
+  let html = '';
+  for (const tf of TFS) {
+    const s = genSignal(tf);
+    if (!s) {
+      html += `<div class="sig-card"><div class="sig-head"><span class="sig-tf">${ICONS[tf]} ${tf}</span><span class="badge WAIT">WAIT</span></div>
+        <div class="sig-body" style="text-align:center;padding:15px;color:var(--muted);font-size:11px;">Data candle tidak tersedia</div></div>`;
+      continue;
+    }
+    const dc = s.dir==='BUY'?'c-buy':'c-sell';
+    html += `<div class="sig-card">
+      <div class="sig-head"><span class="sig-tf">${ICONS[tf]} ${tf}</span><span class="badge ${s.dir}">${s.dir}</span></div>
+      <div class="sig-body"><div class="sig-grid">
+        <div><div class="sf-label">ENTRY</div><div class="sf-val c-entry">${s.entry}</div></div>
+        <div><div class="sf-label">STOP LOSS</div><div class="sf-val c-sl">${s.sl}</div></div>
+        <div><div class="sf-label">TP 1</div><div class="sf-val c-tp">${s.tp1}</div></div>
+        <div><div class="sf-label">TP 2</div><div class="sf-val c-tp">${s.tp2}</div></div>
+        <div><div class="sf-label">RISK:REWARD</div><div class="sf-val c-rr">1:${s.rr}</div></div>
+        <div><div class="sf-label">ARAH</div><div class="sf-val ${dc}">${s.dir}</div></div>
+      </div>
+      <button class="copy-btn" onclick='copySignal(${JSON.stringify(s)},"${tf}")'>📋 Copy Signal untuk Broker</button>
+      </div></div>`;
+  }
+  document.getElementById('sigContainer').innerHTML = html;
+}
+
+function renderCandles() {
+  if (!initialized) return;
+  let rows = '';
+  for (const tf of TFS) {
+    const c = candles[tf]?.closed;
+    if (!c) { rows += `<tr><td class="tf-cell">${tf}</td><td colspan="5" style="color:var(--muted)">--</td></tr>`; continue; }
+    const bull = c.c >= c.o;
+    rows += `<tr><td class="tf-cell">${tf}</td><td>${c.o.toFixed(1)}</td><td>${c.h.toFixed(1)}</td><td>${c.l.toFixed(1)}</td><td>${c.c.toFixed(1)}</td><td class="${bull?'bull':'bear'}">${bull?'▲':'▼'}</td></tr>`;
+  }
+  document.getElementById('candleTbody').innerHTML = rows;
+}
+
+function renderWeekly() {
+  const s = genSignal('Weekly');
+  if (!s) return;
+  const dc = s.dir==='BUY'?'c-buy':'c-sell';
+  document.getElementById('wDir').textContent = s.dir;
+  document.getElementById('wDir').className = `badge ${s.dir}`;
+  document.getElementById('wEntry').textContent = s.entry;
+  document.getElementById('wSL').textContent = s.sl;
+  document.getElementById('wTP1').textContent = s.tp1;
+  document.getElementById('wTP2').textContent = s.tp2;
+  document.getElementById('wRR').textContent = '1:'+s.rr;
+  document.getElementById('wArah').textContent = s.dir;
+  document.getElementById('wArah').className = `sf-val ${dc}`;
+}
+
+function updateStatus() {
+  const now = new Date();
+  const p = x => String(x).padStart(2,'0');
+  document.getElementById('updateVal').textContent = `${p(now.getUTCHours())}:${p(now.getUTCMinutes())}`;
+  document.getElementById('spreadVal').textContent = '~20';
+  document.getElementById('apiVal').textContent = apiName.split(' ')[0];
+  document.getElementById('apiSrc').textContent = 'Sumber: ' + apiName;
+}
+
+// ── MAIN ──
+async function init() {
+  setLoadMsg('Ambil harga XAU/USD...');
+  const res = await getPrice();
+  if (res) {
+    price = res.p;
+    apiName = res.src;
+    document.getElementById('livePrice').textContent = price.toFixed(2);
+    document.getElementById('apiSrc').textContent = 'Sumber: ' + apiName;
+    setLoadMsg('Bina candle M15, M30, H1, H4, Daily, Weekly...');
+    await buildCandles();
+    renderSignals();
+    renderCandles();
+    renderWeekly();
+    updateStatus();
+  } else {
+    setLoadMsg('Gagal ambil harga. Cuba semula dalam 10s...');
+    setTimeout(init, 10000);
+  }
+}
+
+async function updatePrice() {
+  const res = await getPrice();
+  if (res) {
+    prevPrice = price;
+    price = res.p;
+    apiName = res.src;
+    document.getElementById('livePrice').textContent = price.toFixed(2);
+    if (prevPrice) {
+      const d = price-prevPrice;
+      const pct = ((d/prevPrice)*100).toFixed(3);
+      const sign = d>=0?'+':'';
+      const el = document.getElementById('priceChg');
+      el.textContent = `${sign}${d.toFixed(2)} (${sign}${pct}%)`;
+      el.className = 'price-chg '+(d>=0?'up':'down');
+    }
+    renderSignals();
+    renderWeekly();
+    updateStatus();
+  }
+}
+
+// COPY
+function copySignal(s, tf) {
+  const txt = `⚡ XAU/USD SIGNAL [${tf}]\n📌 ARAH: ${s.dir}\n🟢 ENTRY: ${s.entry}\n🔴 SL: ${s.sl}\n✅ TP1: ${s.tp1}\n✅ TP2: ${s.tp2}\n📊 RR: 1:${s.rr}\n\n[XAU/USD SMART v3]`;
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(()=>{});
+  showToast();
+}
+function copyWeekly() { const s=genSignal('Weekly'); if(s) copySignal(s,'Weekly'); }
+function showToast() {
+  const t=document.getElementById('toast');
+  t.classList.remove('show'); void t.offsetWidth;
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// TAB
+function switchTab(name, el) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-i').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+// KIRA
+function kiraLot() {
+  const modal=parseFloat(document.getElementById('kModal').value)||0;
+  const risk=parseFloat(document.getElementById('kRisk').value)||1;
+  const sl=parseFloat(document.getElementById('kSL').value)||0;
+  const res=document.getElementById('kiraRes');
+  if(!modal||!sl){res.innerHTML='<span style="color:var(--red)">Sila isi semua medan.</span>';res.classList.add('show');return;}
+  const riskAmt=modal*(risk/100);
+  const lots=((riskAmt/sl)/100).toFixed(2);
+  const maxLoss=(sl*parseFloat(lots)*100).toFixed(2);
+  res.innerHTML=`<div style="color:var(--gold);margin-bottom:6px;">📊 HASIL KIRAAN</div>
+    <div>Modal: <span style="color:var(--cyan)">$${modal.toFixed(2)}</span></div>
+    <div>Risk: <span style="color:var(--red)">${risk}% = $${riskAmt.toFixed(2)}</span></div>
+    <div>SL: <span style="color:var(--red)">${sl} pips</span></div>
+    <div>LOT SAIZ: <span style="color:var(--green);font-size:17px;font-weight:bold;">${lots} lot</span></div>
+    <div style="margin-top:5px;font-size:10px;color:var(--muted)">Max Loss jika SL kena: ~$${maxLoss}</div>`;
+  res.classList.add('show');
+}
+
+// START
+init();
+setInterval(updatePrice, 30000);
+</script>
+</body>
+</html>
